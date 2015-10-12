@@ -1,1 +1,1 @@
-Website for USI Software Development project. Running on Apache.
+Evansville Day School webapp for USI software development class. Powered by Django, ran on Apache2.
