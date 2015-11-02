@@ -41,57 +41,39 @@
     <div class="container">
       
 	  <div class="jumbotron">
-	  <p align="center"><b>Relay Engine - Evansville Day School Text Alerts</b></p>
-        <p align="center"><b>Administration Sign In</b></p>
-	   </div>
-      </div>
+        <div class="allignTextOverride">
+       <h2>Organization Management</h2>
+	    </div>
+	  <br>
+	 </div>
 	  
 	  <br>
 	  
-	 <form id="logInForm" action="http://127.0.0.1:8000/admin/" method="post"> {% csrf_token %}
-     <div class="adminDataFields">
-	 	<div align="center">
-	 		<div style ="width: 70%">
-	 			<div class="form-group">
-					<label for="username">Username:</label>
-					<input type="username" class="form-control" id="username" name="username">
-	 			</div>
-	 		<div class="form-group">
-				<label for="password">Password:</label>
-				<input type="password" class="form-control" id="password" name="password">
-	 		</div>
-	 		</div>
-	 	</div>
+    <div class="centered">
+    <h2 align="center">Hello, {{ name }}</h2>
+    </div>
+
+	  <div class="centered">
+	  
+	  <p align="center"><span class="glyphicon glyphicon-picture"></span>  <b><u>Update Logo</u></b></p>
+	  <p align="center"><span class="glyphicon glyphicon-list-alt"></span>  <b><u>Manage Lists</u></b></p>
+	  <p align="center"><span class="glyphicon glyphicon-user"></span>  <b><u>Manage Senders</u></b></p>
+	  <p align="center"><span class="glyphicon glyphicon-eye-open"></span>  <b><u>Organization Security Code</u></b></p>
+	  <p align="center"><span class="glyphicon glyphicon-briefcase"></span>  <b><u>Account Information</u></b></p>
+		
+	  </div>
 	 
-	 <br>
-     </div>
-     </form>
-	 
-	 </div class="userDataFields">
-	 
-	 <div class="ButtonListing">
-	 <div align="center">
-	 <button type="button" class="btn btn-success" onclick="btn_LogInPressed()">Login</button>
-	 </div>
-	 </div>
-	 
-      </div>
+      
 
     </div> <!-- /container -->
 
-    <!-- Logic for login button -->
-    <script>
-    	function btn_LogInPressed(){
-    		document.getElementById("logInForm").submit();
-    		//$.post("http://127.0.0.1:8000/admin");
-    		//window.location = "http://127.0.0.1:8000/admin";
-    	}
-    </script>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
   </body>
 </html>
