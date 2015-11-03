@@ -30,6 +30,11 @@ def adminLogin(request):
 				data = RequestContext(request, context)
 				response = HttpResponse(template.render(data))
 				return HttpResponse(template.render(data))
+			else:
+				template = loader.get_template('AdminSignInPage.html')
+				data = RequestContext(request, context)
+				response = HttpResponse(template.render(data))
+				return HttpResponse(template.render(data))
 		else:
 			template = loader.get_template('AdminSignInPage.html')
 			data = RequestContext(request, context)
