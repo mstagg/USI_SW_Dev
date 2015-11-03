@@ -16,21 +16,25 @@ To run on windows:
 
 2. Add the following to your system PATH: 'C:\python27' and 'C:\python27\scripts'
 
-3. Install mysql: http://dev.mysql.com/downloads/installer/
+3. Run the command 'pip install django'
 
-4. Set the mysql password to 'password' for now
+4. Install mysql: http://dev.mysql.com/downloads/installer/
 
-5. Add the following to your system PATH: 'C:\Program Files\MySQL\MySQL Server 5.7\bin'
+5. Set the mysql password to 'password' for now
 
-6. Run 'mysql -u root -p' and enter the password
+6. Add the following to your system PATH: 'C:\Program Files\MySQL\MySQL Server 5.7\bin'
 
-7. Create a database called 'classprogram'
+7. Run 'mysql -u root -p' and enter the password
 
-8. Download and install mysql-connector (x86-64): http://dev.mysql.com/downloads/connector/c/6.0.html#downloads
+8. Create a database called 'classprogram'
 
-9. Copy 'C:\Program Files (x86)\MySQL\MySQL Connector C 6.0.2' to 'C:\Program Files\MySQL'
+9. Download and install mysql-connector (x86-64): http://dev.mysql.com/downloads/connector/c/6.0.html#downloads
 
-10. Navigate to USI_SW_Dev folder and run 'python manage.py migrate'
+10. Copy 'C:\Program Files (x86)\MySQL\MySQL Connector C 6.0.2' to 'C:\Program Files\MySQL'
 
-11. You can now start the serve by running 'python manage.py runserver' in the USI_SW_Dev folder
+11. Run 'pip install MySQL-python'
+
+12. Navigate to USI_SW_Dev folder and run 'python manage.py migrate'
+
+13. You can now start the serve by running 'python manage.py runserver' in the USI_SW_Dev folder
 
