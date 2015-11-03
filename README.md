@@ -14,7 +14,7 @@ To convert DEV BRANCH to PRODUCTION BRANCH:
 
 To run on windows:
 
-1. Download and install git: https://git-scm.com/download/win. Make sure to select the option that allows git to be used in the command prompt is selected suring installation!
+1. Download and install git: https://git-scm.com/download/win. Make sure to select the option that allows git to be used in the command prompt during installation!
 
 2. Download and install python 2.X: https://www.python.org/downloads/release/python-2710/
 
