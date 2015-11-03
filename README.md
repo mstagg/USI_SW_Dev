@@ -44,8 +44,11 @@ To run on windows:
 
 
 Quick Git Setup:
+
 1. git config --global user.name "[JOHN DOE]"
+
 2. git config --global user.name "[JDOE@EMAIL.COM]"
+
 
 Quick Git Use Tutorial (This is not best practice!):
 
