@@ -26,11 +26,13 @@ def adminLogin(request):
 				request.session['name'] = str(results.values_list('first_name', flat = True).get())
 				request.session.set_expiry(600)
 				context['name'] = request.session['name']
+				context['failed'] = False
 				template = loader.get_template('AdminManagement.html')
 				data = RequestContext(request, context)
 				response = HttpResponse(template.render(data))
 				return HttpResponse(template.render(data))
 			else:
+				context['failed'] = True
 				template = loader.get_template('AdminSignInPage.html')
 				data = RequestContext(request, context)
 				response = HttpResponse(template.render(data))

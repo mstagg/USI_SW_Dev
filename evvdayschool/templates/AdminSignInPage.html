@@ -48,7 +48,15 @@
 	  
 	  <br>
 	  
-	 <form id="logInForm" action="http://50.4.179.220/admin/" method="post"> {% csrf_token %}
+	   {% if failed %}
+	  <div class="alert alert-danger" align = "center" role="alert">
+        <span class="glyphicon glyphicon-warning"></span><strong>Login Error:</strong> Your login information was incorrect! Please try again...
+      </div>
+	  {% endif %}
+	  
+	  <br>
+	  
+	 <form id="logInForm" action="http://127.0.0.1:8000/admin/" method="post"> {% csrf_token %}
      <div class="adminDataFields">
 	 	<div align="center">
 	 		<div style ="width: 70%">
@@ -76,7 +84,7 @@
 	 </div>
 	 
       </div>
-
+	 
     </div> <!-- /container -->
 
     <!-- Logic for login button -->
