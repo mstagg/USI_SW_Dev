@@ -18,5 +18,6 @@ from django.conf.urls import include, url
 from adminLogin import views
 
 urlpatterns = [
+    url(r'admin/logo/$', views.updateLogo),
     url(r'admin/$', views.adminLogin),
 ]
