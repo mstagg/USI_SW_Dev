@@ -18,6 +18,9 @@ from django.conf.urls import include, url
 from adminLogin import views
 
 urlpatterns = [
-    url(r'admin/logo/$', views.updateLogo),
-    url(r'admin/$', views.adminLogin),
+    url(r'admin/tokens/$', views.addTokens, name = "app-admin-tokens"),
+    url(r'admin/account/$', views.accountInfo, name = "app-admin-account"),
+    url(r'admin/logo/$', views.updateLogo, name = "app-admin-logo"),
+    url(r'admin/logout/$', views.adminLogout, name = "app-admin-logout"),
+    url(r'admin/$', views.adminLogin, name = "app-admin-login"),
 ]

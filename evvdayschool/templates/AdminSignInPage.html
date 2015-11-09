@@ -2,8 +2,8 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
+<head>
+	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
@@ -24,69 +24,61 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
+</head>
 
-  <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">Evansville Day School Text Alerts</a>
-        </div>
-      </div>
-    </nav>
-  
-   <img src="{% static 'res/logo.jpg' %}" alt="Evansville Day School" style="max-width: 100%;max-height: 100%;width: auto;height: auto; margin-top: 60px; margin-bottom: 6px">
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="{% url 'app-admin-login' %}">Evansville Day School Text Alerts</a>
+			</div>
+		</div>
+	</nav>
+	
+	<img src="{% static 'res/logo.jpg' %}" alt="Evansville Day School" style="max-width: 100%;max-height: 100%;width: auto;height: auto; margin-top: 60px; margin-bottom: 6px">
 
-  
-    <div class="container">
-      
-	  <div class="jumbotron">
-	  <p align="center"><b>Relay Engine - Evansville Day School Text Alerts</b></p>
-        <p align="center"><b>Administration Sign In</b></p>
-	   </div>
-      </div>
+	<div class="container">
+		<div class="jumbotron">
+			<p align="center"><b>Relay Engine - Evansville Day School Text Alerts</b></p>
+			<p align="center"><b>Administration Sign In</b></p>
+		</div>
+    </div>
+	<br>
 	  
-	  <br>
-	  
-	   {% if failed %}
-	  <div class="alert alert-danger" align = "center" role="alert">
-        <span class="glyphicon glyphicon-warning"></span><strong>Login Error:</strong> Your login information was incorrect! Please try again...
-      </div>
-	  {% endif %}
-	  
-	  <br>
-	  
-	 <form id="logInForm" action="http://127.0.0.1:8000/admin/" method="post"> {% csrf_token %}
-     <div class="adminDataFields">
-	 	<div align="center">
-	 		<div style ="width: 70%">
-	 			<div class="form-group">
-					<label for="username">Username:</label>
-					<input type="username" class="form-control" id="username" name="username">
-	 			</div>
-	 		<div class="form-group">
-				<label for="password">Password:</label>
-				<input type="password" class="form-control" id="password" name="password">
-	 		</div>
-	 		</div>
-	 	</div>
-	 
-	 <br>
-     </div>
-     </form>
-	 
-	 </div class="userDataFields">
-	 
-	 <div class="ButtonListing">
-	 <div align="center">
-	 <button type="button" class="btn btn-success" onclick="btn_LogInPressed()">Login</button>
-	 </div>
-	 </div>
-	 
-      </div>
-	 
-    </div> <!-- /container -->
-
+	<form id="logInForm" action="{% url 'app-admin-login' %}" method="post"> {% csrf_token %}
+		<div class="adminDataFields">
+			<div align="center">
+				<div style ="width: 70%">
+					<div class="form-group">
+						<label for="username">Username:</label>
+						<input type="username" class="form-control" id="username" name="username">
+					</div>
+					<div class="form-group">
+						<label for="password">Password:</label>
+						<input type="password" class="form-control" id="password" name="password">
+					</div>
+				</div>
+			</div>
+			<br>
+		</div>
+    </form>
+	
+	<div class="ButtonListing">
+		<div align="center">
+			<button type="button" class="btn btn-success" onclick="btn_LogInPressed()">Login</button>
+		</div>
+	</div>
+	<br>
+	
+	{% if failed %}
+	<div class="container">
+		<div class="alert alert-danger" align = "center" role="alert">
+			<span class="glyphicon glyphicon-warning"></span><strong>Login Error:</strong> Your login information was incorrect! Please try again...
+		</div>
+	</div>
+	<br>
+	{% endif %}
+	
     <!-- Logic for login button -->
     <script>
     	function btn_LogInPressed(){
@@ -99,5 +91,5 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
-  </body>
+</body>
 </html>

@@ -1,104 +1,137 @@
-from django.shortcuts import render_to_response
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import loader
-from django.template import RequestContext
+from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
 from django import forms
-from models import User
+from models import User, TokenHistory
 
+# Forms
+# TODO: move into their own py file
+
+# Used to transport login information to a view
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(label='password', max_length=100)
 
+# Used to transport a new logo image to a view
 class UploadLogo(forms.Form):
     file = forms.FileField()
-# Create your views here.
 
+# Views
+
+# Admin login page
 def adminLogin(request):
     context = {}
     context.update(csrf(request))
 
+    # If received a POST request...
     if request.POST:
         form = LoginForm(request.POST)
+        # If login form has legitimate data...
         if form.is_valid():
-            username = str(form.cleaned_data['username'])
-            password = str(form.cleaned_data['password'])
-            results = User.objects.filter(user_name = username, password = password, is_admin = True)
-            if len(results) > 0:
-                request.session['name'] = str(results.values_list('first_name', flat = True).get())
+            u = str(form.cleaned_data['username'])
+            p = str(form.cleaned_data['password'])
+            # If login credentials exist in database...
+            # Return the management page
+            if adminExists(u, p):
+                request.session['name'] = getName(u, p)
+                request.session['admin'] = True
                 request.session.set_expiry(600)
                 context['name'] = request.session['name']
                 context['failed'] = False
-                template = loader.get_template('AdminManagement.html')
-                data = RequestContext(request, context)
-                response = HttpResponse(template.render(data))
-                return HttpResponse(template.render(data))
+                return render(request, 'AdminManagement.html', context)
+            # If login credentials do NOT exist...
+            # Return the sign in page
             else:
                 context['failed'] = True
-                template = loader.get_template('AdminSignInPage.html')
-                data = RequestContext(request, context)
-                response = HttpResponse(template.render(data))
-                return HttpResponse(template.render(data))
+                return render(request, 'AdminSignInPage.html', context)
+        # If login form did NOT contain legitimate data...
+        # Return the sign in page
         else:
-            template = loader.get_template('AdminSignInPage.html')
-            data = RequestContext(request, context)
-            response = HttpResponse(template.render(data))
-            return HttpResponse(template.render(data))
-    elif 'name' in request.session:
-        request.session.set_expiry(600)
-        context['name'] = request.session['name']
-        template = loader.get_template('AdminManagement.html')
-        data = RequestContext(request, context)
-        response = HttpResponse(template.render(data))
-        return HttpResponse(template.render(data))
-    else:
-        template = loader.get_template('AdminSignInPage.html')
-        data = RequestContext(request, context)
-        response = HttpResponse(template.render(data))
-        return HttpResponse(template.render(data))
+            return render(request, 'AdminSignInPage.html', context)
 
+    # If received any other request...
+    else:
+        # If a user is currently logged in AND is an admin...
+        # Return the management page
+        if 'admin' in request.session:
+            request.session.set_expiry(600)
+            context['name'] = request.session['name']
+            return render(request, 'AdminManagement.html', context)
+        # If no admin user is currently logged in...
+        # Return the sign in page
+        else:
+            return render(request, 'AdminSignInPage.html', context)
+
+def adminLogout(request):
+    request.session.flush()
+    return redirect('adminLogin.views.adminLogin')
+
+# Update the logo page
 def updateLogo(request):
     context = {}
     context.update(csrf(request))
 
-    if request.POST:
-        form = UploadLogo(request.POST, request.FILES)
-        if form.is_valid():
-            handleFile(request.FILES['file'])
-            template = loader.get_template('UpdateLogo.html')
-            data = RequestContext(request, context)
-            response = HttpResponse(template.render(data))
-            return HttpResponse(template.render(data))
+    # If a user is logged in AND is an admin...
+    if 'admin' in request.session:
+        # If request is a POST request
+        if request.POST:
+            request.session.set_expiry(600)
+            form = UploadLogo(request.POST, request.FILES)
+            # If login form has legitimate data...
+            # Replace logo.jpg with new files and return update logo page
+            if form.is_valid():
+                if replaceLogo(request.FILES['file']):
+                    context['success'] = True
+                    return render(request, 'UpdateLogo.html', context)
+                else:
+                    context['success'] = False
+                    return render(request, 'UpdateLogo.html', context)
+        # If received any other request...
+        # Return the update logo page
+        else:
+            request.session.set_expiry(600)
+            return render(request, 'UpdateLogo.html', context)
+    # If user is not logged in or not an admin...
+    # Redirect to the admin sign in page
     else:
-        template = loader.get_template('UpdateLogo.html')
-        data = RequestContext(request, context)
-        response = HttpResponse(template.render(data))
-        return HttpResponse(template.render(data))
+        return redirect('adminLogin.views.adminLogin')
 
-def handleFile(f):
-    with open('evvdayschool/static/res/logo.jpg', 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
+def accountInfo(request):
+    context = {}
+    if 'admin' in request.session:
+        request.session.set_expiry(600)
+        return render(request, 'AccountInformation.html', context)
+    else:
+       return redirect('adminLogin.views.adminLogin')
 
-# def list(request):
-#     # Handle file upload
-#     if request.method == 'POST':
-#         form = DocumentForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             newdoc = Document(docfile = request.FILES['docfile'])
-#             newdoc.save()
-#
-#             # Redirect to the document list after POST
-#             return HttpResponseRedirect(reverse('myproject.myapp.views.list'))
-#     else:
-#         form = DocumentForm() # A empty, unbound form
-#
-#     # Load documents for the list page
-#     documents = Document.objects.all()
-#
-#     # Render list page with the documents and the form
-#     return render_to_response(
-#         'list.html',
-#         {'documents': documents, 'form': form},
-#         context_instance=RequestContext(request)
-#    )
+def addTokens(request):
+    context = {}
+    if 'admin' in request.session:
+        request.session.set_expiry(600)
+        return render(request, 'AddTokens.html', context)
+    else:
+       return redirect('adminLogin.views.adminLogin')
+# Auxiliary functions
+
+# Takes username and password and returns the user's first name
+def getName(usr, pwd):
+    results = User.objects.filter(user_name = usr, password = pwd, is_admin = True)
+    return str(results.values_list('first_name', flat = True).get())
+
+# Takes username and password and searches database for an admin account
+def adminExists(usr, pwd):
+    results = User.objects.filter(user_name = usr, password = pwd, is_admin = True)
+    if(len(results) > 0):
+        return True
+    else:
+        return False
+
+# TODO: return false if file type is not an image
+# Replaces the site logo with the file f
+def replaceLogo(f):
+    try:
+        with open('evvdayschool/static/res/logo.jpg', 'wb+') as destination:
+            for chunk in f.chunks():
+                destination.write(chunk)
+        return True
+    except:
+        return False
