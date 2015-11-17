@@ -18,3 +18,7 @@ class TokenHistory(models.Model):
     change_amount = models.IntegerField()
     change_datetime = models.DateTimeField()
     current_amount = models.IntegerField()
+
+class List(models.Model):
+    name = models.CharField(max_length = 50)
+    size = models.IntegerField()
