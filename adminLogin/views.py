@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
 from django import forms
-from models import User, TokenHistory
+from models import User, List
 
 # Forms
 # TODO: move into their own py file
@@ -14,6 +14,9 @@ class LoginForm(forms.Form):
 # Used to transport a new logo image to a view
 class UploadLogo(forms.Form):
     file = forms.FileField()
+
+class CreateNewList(forms.Form):
+    name = forms.CharField(max_length = 50);
 
 # Views
 
@@ -95,6 +98,31 @@ def updateLogo(request):
     else:
         return redirect('adminLogin.views.adminLogin')
 
+# Allows user to manage mailing lists
+def manageLists(request):
+    context = {}
+    # If user is logged in AND is an admin...
+    if 'admin' in request.session:
+        request.session.set_expiry(600)
+        context['mailingLists'] = getListNames()
+        # If request is POST...
+        if request.POST:
+            form = CreateNewList(request.POST, request.FILES)
+            # If login form has legitimate data...
+            # Add a new List model with the name from the form
+            if form.is_valid():
+                n = str(form.cleaned_data['newListName'])
+                newList = CreateNewList(name = n)
+                n.save()
+                context['mailingLists'] = getListNames()
+                return render(request, 'ManageLists.html', context)
+        # If request is GET...
+        else:
+            return render(request, 'ManageLists.html', context)
+    # If admin login has expired, return to login page
+    else:
+        return redirect('adminLogin.views.adminLogin')
+
 def accountInfo(request):
     context = {}
     if 'admin' in request.session:
@@ -110,6 +138,8 @@ def addTokens(request):
         return render(request, 'AddTokens.html', context)
     else:
        return redirect('adminLogin.views.adminLogin')
+
+
 # Auxiliary functions
 
 # Takes username and password and returns the user's first name
@@ -124,6 +154,11 @@ def adminExists(usr, pwd):
         return True
     else:
         return False
+
+def getListNames():
+    results = List.objects.filter()
+    r = results.values_list('name', flat = True)
+    return r
 
 # TODO: return false if file type is not an image
 # Replaces the site logo with the file f
