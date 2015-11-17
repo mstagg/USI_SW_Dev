@@ -16,7 +16,7 @@ class UploadLogo(forms.Form):
     file = forms.FileField()
 
 class CreateNewList(forms.Form):
-    name = forms.CharField(max_length = 50);
+    newListName = forms.CharField(max_length = 50)
 
 # Views
 
@@ -101,19 +101,20 @@ def updateLogo(request):
 # Allows user to manage mailing lists
 def manageLists(request):
     context = {}
+    context.update(csrf(request))
     # If user is logged in AND is an admin...
     if 'admin' in request.session:
         request.session.set_expiry(600)
         context['mailingLists'] = getListNames()
         # If request is POST...
         if request.POST:
-            form = CreateNewList(request.POST, request.FILES)
+            form = CreateNewList(request.POST)
             # If login form has legitimate data...
             # Add a new List model with the name from the form
             if form.is_valid():
                 n = str(form.cleaned_data['newListName'])
-                newList = CreateNewList(name = n)
-                n.save()
+                newList = List(name = n, size = 0)
+                newList.save()
                 context['mailingLists'] = getListNames()
                 return render(request, 'ManageLists.html', context)
         # If request is GET...
