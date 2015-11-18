@@ -1,0 +1,133 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="{% static 'img/favicon.ico' %}">
+  <title>Evansville Day School Text Alerts</title>
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="{% static 'css/jumbotron-narrow.css' %}" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{% url 'app-admin-login' %}">Evansville Day School Text Alerts</a>
+      </div>
+      <div class="navbar-right" vertical-align="bottom">
+        <p class="navbar-btn">
+          <form id="logoutForm" action="{% url 'app-admin-logout' %}" method="get">
+              <button type="button" class="btn btn-danger" onclick="btn_LogoutPressed()">Logout</button>
+          </form>
+        </p>
+      </div>
+    </div>
+  </nav>
+
+  <img src="{% static 'res/logo.jpg' %}" alt="Evansville Day School" style="max-width: 100%;max-height: 100%;width: auto;height: auto; margin-top: 60px; margin-bottom: 6px">
+
+  <div class="container">
+    <div class="jumbotron">
+      <p align="center">
+        <b><u>Sender Management</u></b>
+      </p>
+    </div>
+
+    {% if failed %}
+    <br>
+        <div class="alert alert-danger" align = "center" role="alert">
+            <span class="glyphicon glyphicon-warning"></span><strong>Error:</strong> The information could not be saved. Please try again...
+        </div>
+    <br>
+    {% endif %}
+
+    <br>
+      <p>
+        <b><u>New Sender</u></b>
+      </p>
+      <div class="userDataFields">
+
+        <form id="createNewSender" action="{% url 'app-admin-senders' %}" method="post"> {% csrf_token %}
+          <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input class="form-control" id="email" name="email">
+          </div>
+          <div class="form-group">
+            <label for="firstName">First Name:</label>
+            <input class="form-control" id="firstName" name="firstName">
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name:</label>
+            <input class="form-control" id="lastName" name="lastName">
+          </div>
+          <div class="form-group">
+            <label for="pin">5-digit PIN:</label>
+            <input type="password" class="form-control-CellPhoneEntrySmall" id="pin" name="pin">
+            <button type="button" class="btn btn-primary">Generate</button>
+          </div>
+          <button type="submit" class="btn btn-success">Save</button>
+          <br>
+        </form>
+
+      </div>
+      <br><br>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Current Senders:</th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for email in emailList %}
+          <tr>
+            <td><button type="button" class="btn btn-primary btn-xs">Edit</button></td>
+            <td><button type="button" class="btn btn-danger btn-xs">Delete</button></td>
+            <td><p class="SmallPaddingForXSBTN"><u>{{email}}</u></p></td>
+            <td><button type="button" class="btn btn-warning btn-xs">Lists</button></td>
+          </tr>
+          {% empty %}
+          <td>
+            <p class="SmallPaddingForXSBTN">
+              <span class="glyphicon glyphicon-warning"></span>
+              <u>The mailing list is empty...</u>
+            </p>
+          </td>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <br>
+
+    <div align="center">
+        <a href="{% url 'app-admin-login' %}"><b><u>Return to Organization Management Menu</u></b></a>
+    </div>
+  </div>
+
+  <!-- Logic for logout button -->
+<script>
+	function btn_LogoutPressed(){
+		document.getElementById("logoutForm").submit();
+	}
+</script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
+</body>
+</html>

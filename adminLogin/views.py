@@ -8,7 +8,7 @@ from models import User, List
 
 # Used to transport login information to a view
 class LoginForm(forms.Form):
-    username = forms.CharField()
+    username = forms.CharField(max_length = 50)
     password = forms.CharField(label='password', max_length=100)
 
 # Used to transport a new logo image to a view
@@ -18,6 +18,11 @@ class UploadLogo(forms.Form):
 class CreateNewList(forms.Form):
     newListName = forms.CharField(max_length = 50)
 
+class CreateNewSender(forms.Form):
+    email = forms.EmailField()
+    firstName = forms.CharField(max_length = 50)
+    lastName = forms.CharField(max_length = 50)
+    pin = forms.IntegerField()
 # Views
 
 # Admin login page
@@ -117,10 +122,46 @@ def manageLists(request):
                 newList.save()
                 context['mailingLists'] = getListNames()
                 return render(request, 'ManageLists.html', context)
+            else:
+                context['failed'] = True
+                return render(request, 'ManageLists.html', context)
         # If request is GET...
         else:
             return render(request, 'ManageLists.html', context)
     # If admin login has expired, return to login page
+    else:
+        return redirect('adminLogin.views.adminLogin')
+
+# Allows user to manage users with sender permissions
+def manageSenders(request):
+    context = {}
+    context.update(csrf(request))
+    if 'admin' in request.session:
+        request.session.set_expiry(600)
+        context['emailList'] = getSenderEmails()
+        if request.POST:
+            form = CreateNewSender(request.POST)
+            if form.is_valid():
+                e = str(form.cleaned_data['email'])
+                f = str(form.cleaned_data['firstName'])
+                l = str(form.cleaned_data['lastName'])
+                p = int(form.cleaned_data['pin'])
+                newSender = User(user_name = generateUserName(f, l),
+                                 password = "",
+                                 email = e,
+                                 pin = p,
+                                 is_admin = False,
+                                 is_sender = True,
+                                 first_name = f,
+                                 last_name = l)
+                newSender.save()
+                context['emailList'] = getSenderEmails()
+                return render(request, 'ManageSenders.html', context)
+            else:
+                context['failed'] = True
+                return render(request, 'ManageSenders.html', context)
+        else:
+            return render(request, 'ManageSenders.html', context)
     else:
         return redirect('adminLogin.views.adminLogin')
 
@@ -160,6 +201,26 @@ def getListNames():
     results = List.objects.filter()
     r = results.values_list('name', flat = True)
     return r
+
+def getSenderEmails():
+    results = User.objects.filter(is_sender = True)
+    r = results.values_list('email', flat = True)
+    return r
+
+def generateUserName(first, last):
+    number = 0
+    flag = True
+    first = first[0]
+    usr = first + last
+    while flag:
+        results = User.objects.filter(user_name = usr)
+        if(len(results) > 0):
+            flag = True
+            number = number + 1
+            usr = usr + str(number)
+        else:
+            flag = False
+    return usr
 
 # TODO: return false if file type is not an image
 # Replaces the site logo with the file f

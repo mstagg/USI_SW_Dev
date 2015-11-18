@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'admin/account/$', views.accountInfo, name = "app-admin-account"),
     url(r'admin/logo/$', views.updateLogo, name = "app-admin-logo"),
     url(r'admin/lists/$', views.manageLists, name = "app-admin-lists"),
+    url(r'admin/senders/$', views.manageSenders, name = "app-admin-senders"),
     url(r'admin/logout/$', views.adminLogout, name = "app-admin-logout"),
     url(r'admin/$', views.adminLogin, name = "app-admin-login"),
 ]

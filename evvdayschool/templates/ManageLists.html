@@ -43,6 +43,14 @@
 		</div>
 		<br>
 
+		{% if failed %}
+		<br>
+			<div class="alert alert-danger" align = "center" role="alert">
+				<span class="glyphicon glyphicon-warning"></span><strong>Error:</strong> The information could not be saved. Please try again...
+			</div>
+		<br>
+		{% endif %}
+
 		<form id="createNewList" action="{% url 'app-admin-lists' %}" method="post"> {% csrf_token %}
 			<div class="form-group">
 				<label for="newListName"><h3>New List:</h3></label>
