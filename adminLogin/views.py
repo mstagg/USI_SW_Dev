@@ -1,31 +1,12 @@
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
-from django import forms
 from models import User, List
+from forms import LoginForm, UploadLogo, ListForm, CreateNewSender, DeleteSender
+import ViewLogic
 
-# Forms
-# TODO: move into their own py file
-
-# Used to transport login information to a view
-class LoginForm(forms.Form):
-    username = forms.CharField(max_length = 50)
-    password = forms.CharField(label='password', max_length=100)
-
-# Used to transport a new logo image to a view
-class UploadLogo(forms.Form):
-    file = forms.FileField()
-
-class CreateNewList(forms.Form):
-    newListName = forms.CharField(max_length = 50)
-
-class CreateNewSender(forms.Form):
-    email = forms.EmailField()
-    firstName = forms.CharField(max_length = 50)
-    lastName = forms.CharField(max_length = 50)
-    pin = forms.IntegerField()
 # Views
 
-# Admin login page
+# Allows user to log in to the admin management site
 def adminLogin(request):
     context = {}
     context.update(csrf(request))
@@ -39,18 +20,20 @@ def adminLogin(request):
             p = str(form.cleaned_data['password'])
             # If login credentials exist in database...
             # Return the management page
-            if adminExists(u, p):
-                request.session['name'] = getName(u, p)
+            if ViewLogic.adminExists(u, p):
+                request.session['name'] = ViewLogic.getName(u, p)
                 request.session['admin'] = True
                 request.session.set_expiry(600)
                 context['name'] = request.session['name']
                 context['failed'] = False
                 return render(request, 'AdminManagement.html', context)
+
             # If login credentials do NOT exist...
             # Return the sign in page
             else:
                 context['failed'] = True
                 return render(request, 'AdminSignInPage.html', context)
+
         # If login form did NOT contain legitimate data...
         # Return the sign in page
         else:
@@ -64,89 +47,127 @@ def adminLogin(request):
             request.session.set_expiry(600)
             context['name'] = request.session['name']
             return render(request, 'AdminManagement.html', context)
+
         # If no admin user is currently logged in...
         # Return the sign in page
         else:
             return render(request, 'AdminSignInPage.html', context)
 
-def adminLogout(request):
-    request.session.flush()
-    return redirect('adminLogin.views.adminLogin')
 
-# Update the logo page
+# Handles logout procedures, only accepts POST
+def adminLogout(request):
+    if request.POST:
+        request.session.flush()
+        return redirect('adminLogin.views.adminLogin')
+
+
+# TODO: ADD CODE TO HANDLE INVALID FORMS
+# Allows user to update the current site logo
 def updateLogo(request):
     context = {}
     context.update(csrf(request))
 
     # If a user is logged in AND is an admin...
     if 'admin' in request.session:
-        # If request is a POST request
+        request.session.set_expiry(600)
+        # If request is a POST request...
         if request.POST:
-            request.session.set_expiry(600)
             form = UploadLogo(request.POST, request.FILES)
-            # If login form has legitimate data...
+            # If form has legitimate data...
             # Replace logo.jpg with new files and return update logo page
             if form.is_valid():
-                if replaceLogo(request.FILES['file']):
+                if ViewLogic.replaceLogo(request.FILES['file']):
                     context['success'] = True
                     return render(request, 'UpdateLogo.html', context)
+
                 else:
                     context['success'] = False
                     return render(request, 'UpdateLogo.html', context)
+            # If form did NOT contain legitimate data...
+            # Return the update logo page with error prompt
+            else:
+                pass
         # If received any other request...
         # Return the update logo page
         else:
-            request.session.set_expiry(600)
             return render(request, 'UpdateLogo.html', context)
+
     # If user is not logged in or not an admin...
     # Redirect to the admin sign in page
     else:
         return redirect('adminLogin.views.adminLogin')
 
-# Allows user to manage mailing lists
+
+# TODO: PREVENT ADDING LISTS WITH THE SAME NAME
+# Allows user to create, edit, and delete mailing lists
 def manageLists(request):
     context = {}
     context.update(csrf(request))
+
     # If user is logged in AND is an admin...
     if 'admin' in request.session:
         request.session.set_expiry(600)
-        context['mailingLists'] = getListNames()
+        context['mailingLists'] = ViewLogic.getListNames()
         # If request is POST...
         if request.POST:
-            form = CreateNewList(request.POST)
-            # If login form has legitimate data...
+            form = ListForm(request.POST)
+            # If form has legitimate data...
             # Add a new List model with the name from the form
             if form.is_valid():
-                n = str(form.cleaned_data['newListName'])
+                n = str(form.cleaned_data['name'])
                 newList = List(name = n, size = 0)
                 newList.save()
-                context['mailingLists'] = getListNames()
+                context['mailingLists'] = ViewLogic.getListNames()
                 return render(request, 'ManageLists.html', context)
+
+            # If form did NOT contain legitimate data...
+            # Return the manage lists page with error prompt
             else:
                 context['failed'] = True
                 return render(request, 'ManageLists.html', context)
+
         # If request is GET...
         else:
             return render(request, 'ManageLists.html', context)
+
     # If admin login has expired, return to login page
     else:
         return redirect('adminLogin.views.adminLogin')
 
-# Allows user to manage users with sender permissions
+
+# Handles the deletion of lists, only accepts POST
+def deleteList(request):
+    # If admin is logged in and request is POST...
+    # Delete the list that shares a name with the name from the form
+    if 'admin' in request.session and request.POST:
+        form = ListForm(request.POST)
+        if form.is_valid():
+            n = str(form.cleaned_data['name'])
+            List.objects.filter(name = n).delete()
+            return redirect('adminLogin.views.manageLists')
+
+
+# TODO: PREVENT ADDING USERS WITH THE SAME EMAIL
+# Allows user to create, edit, and delete users with sender permissions
 def manageSenders(request):
     context = {}
     context.update(csrf(request))
+
+    # If admin is logged in...
     if 'admin' in request.session:
         request.session.set_expiry(600)
-        context['emailList'] = getSenderEmails()
+        context['emailList'] = ViewLogic.getSenderEmails()
+        # If request type is POST...
         if request.POST:
             form = CreateNewSender(request.POST)
+            # If form has legitimate data...
+            # Add a new User model with the information from the form
             if form.is_valid():
                 e = str(form.cleaned_data['email'])
                 f = str(form.cleaned_data['firstName'])
                 l = str(form.cleaned_data['lastName'])
                 p = int(form.cleaned_data['pin'])
-                newSender = User(user_name = generateUserName(f, l),
+                newSender = User(user_name = ViewLogic.generateUserName(f, l),
                                  password = "",
                                  email = e,
                                  pin = p,
@@ -155,16 +176,37 @@ def manageSenders(request):
                                  first_name = f,
                                  last_name = l)
                 newSender.save()
-                context['emailList'] = getSenderEmails()
+                context['emailList'] = ViewLogic.getSenderEmails()
                 return render(request, 'ManageSenders.html', context)
+
+            # If form did NOT contain legitimate data...
+            # Return the manage lists page with error prompt
             else:
                 context['failed'] = True
                 return render(request, 'ManageSenders.html', context)
+
+        # If request is not POST...
         else:
             return render(request, 'ManageSenders.html', context)
+
+    # If admin login has expired, return to login page
     else:
         return redirect('adminLogin.views.adminLogin')
 
+
+# Handles the deletion of sender users, only accepts POST
+def deleteSender(request):
+    # If admin is logged in and request is POST...
+    # Delete the User that shares the email with the email from the form
+    if 'admin' in request.session and request.POST:
+        form = DeleteSender(request.POST)
+        if form.is_valid():
+            e = str(form.cleaned_data['email'])
+            User.objects.filter(email = e).delete()
+            return redirect('adminLogin.views.manageSenders')
+
+
+#TODO: ADD FUNCTIONALITY
 def accountInfo(request):
     context = {}
     if 'admin' in request.session:
@@ -173,6 +215,7 @@ def accountInfo(request):
     else:
        return redirect('adminLogin.views.adminLogin')
 
+#TODO: ADD FUNCTIONALITY
 def addTokens(request):
     context = {}
     if 'admin' in request.session:
@@ -180,55 +223,3 @@ def addTokens(request):
         return render(request, 'AddTokens.html', context)
     else:
        return redirect('adminLogin.views.adminLogin')
-
-
-# Auxiliary functions
-
-# Takes username and password and returns the user's first name
-def getName(usr, pwd):
-    results = User.objects.filter(user_name = usr, password = pwd, is_admin = True)
-    return str(results.values_list('first_name', flat = True).get())
-
-# Takes username and password and searches database for an admin account
-def adminExists(usr, pwd):
-    results = User.objects.filter(user_name = usr, password = pwd, is_admin = True)
-    if(len(results) > 0):
-        return True
-    else:
-        return False
-
-def getListNames():
-    results = List.objects.filter()
-    r = results.values_list('name', flat = True)
-    return r
-
-def getSenderEmails():
-    results = User.objects.filter(is_sender = True)
-    r = results.values_list('email', flat = True)
-    return r
-
-def generateUserName(first, last):
-    number = 0
-    flag = True
-    first = first[0]
-    usr = first + last
-    while flag:
-        results = User.objects.filter(user_name = usr)
-        if(len(results) > 0):
-            flag = True
-            number = number + 1
-            usr = usr + str(number)
-        else:
-            flag = False
-    return usr
-
-# TODO: return false if file type is not an image
-# Replaces the site logo with the file f
-def replaceLogo(f):
-    try:
-        with open('evvdayschool/static/res/logo.jpg', 'wb+') as destination:
-            for chunk in f.chunks():
-                destination.write(chunk)
-        return True
-    except:
-        return False

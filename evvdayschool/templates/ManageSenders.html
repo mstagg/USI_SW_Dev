@@ -93,7 +93,10 @@
           {% for email in emailList %}
           <tr>
             <td><button type="button" class="btn btn-primary btn-xs">Edit</button></td>
-            <td><button type="button" class="btn btn-danger btn-xs">Delete</button></td>
+            <form id="deleteSender" action="{% url 'app-admin-delete-sender' %}" method="post"> {% csrf_token %}
+              <td><button type="submit" class="btn btn-danger btn-xs"">Delete</button></td>
+              <input type="hidden" name="email" value="{{email}}">
+            </form>
             <td><p class="SmallPaddingForXSBTN"><u>{{email}}</u></p></td>
             <td><button type="button" class="btn btn-warning btn-xs">Lists</button></td>
           </tr>

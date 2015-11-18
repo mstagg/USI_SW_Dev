@@ -54,7 +54,7 @@
 		<form id="createNewList" action="{% url 'app-admin-lists' %}" method="post"> {% csrf_token %}
 			<div class="form-group">
 				<label for="newListName"><h3>New List:</h3></label>
-				<input type="newListName" class="form-control-maxWidth" id="newListName" name="newListName"> <!--I will need to add a name in addition to id-->
+				<input type="newListName" class="form-control-maxWidth" id="newListName" name="name"> <!--I will need to add a name in addition to id-->
 				<button type="submit" class="btn btn-success">Save</button>
 			</div>
 		</form>
@@ -71,8 +71,11 @@
 			<tbody>
 				{% for list in mailingLists %}
 				<tr>
-					<td><p class="SmallPaddingForXSBTN"><u>{{list}}</u></p></td>
-					<td><button type="button" class="btn btn-danger btn-xs">Delete</button></td>
+                    <form id="deleteSender" action="{% url 'app-admin-delete-list' %}" method="post"> {% csrf_token %}
+					    <td><p class="SmallPaddingForXSBTN"><u>{{list}}</u></p></td>
+					    <td><button type="submit" class="btn btn-danger btn-xs">Delete</button></td>
+                        <input type="hidden" name="name" value="{{list}}">
+                    </form>
 				</tr>
 				{% empty %}
 				<td>
