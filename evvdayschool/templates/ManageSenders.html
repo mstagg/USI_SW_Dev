@@ -78,8 +78,8 @@
           <div class="form-group">
             <label class="col-sm-2 control-label" role="form">5-digit PIN:</label>
 			<div class="col-sm-10">
-            <input type="password" class="form-control-CellPhoneEntrySmall" id="pin" name="pin">
-            <button type="button" class="btn btn-primary" onclick="btn_GeneratePressed">Generate</button>
+            <input type="form-control" class="form-control-CellPhoneEntrySmall" id="pin" name="pin">
+            <button type="button" class="btn btn-primary" onclick="btn_GeneratePressed()">Generate</button>
 			</div class="col-sm-10">
           </div>
           <button type="submit" class="btn btn-success">Save</button>
@@ -136,10 +136,11 @@
   <!--- Logic for generate button --->
   <script>
   function btn_GeneratePressed(){
-		int code = Math.floor(Math.random() * 90000) + 10000;
+		var code = Math.floor(Math.random() * 90000) + 10000;
+		var codeStr = code.toString();
 		//...Would I need to figure out how to apply the code to the text field,
 		//or will Python handle that in the back end? - Justin
-		document.getElementById("pin").value = code;
+		document.getElementById("pin").value = codeStr;
 		//Let me know if this works.
 	}
   </script>

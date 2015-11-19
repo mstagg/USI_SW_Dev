@@ -23,6 +23,13 @@
             <div class="navbar-header">
                 <a class="navbar-brand" href="{% url 'app-admin-login' %}">Evansville Day School Text Alerts</a>
             </div>
+            <div class="navbar-right" vertical-align="bottom">
+				<p class="navbar-btn">
+					<form id="logoutForm" action="{% url 'app-admin-logout' %}" method="get">
+						<button type="button" class="btn btn-danger" onclick="btn_LogoutPressed()">Logout</button>
+					</form>
+				</p>
+			</div>
         </div>
     </nav>
 
@@ -101,6 +108,12 @@
         </div>
     </div>
 
+  <!-- Logic for logout button -->
+<script>
+	function btn_LogoutPressed(){
+		document.getElementById("logoutForm").submit();
+	}
+</script>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->

@@ -60,6 +60,9 @@ def adminLogout(request):
     if request.POST:
         request.session.flush()
         return redirect('adminLogin.views.adminLogin')
+    else:
+        request.session.flush()
+        return redirect('adminLogin.views.adminLogin')
 
 
 # TODO: ADD CODE TO HANDLE INVALID FORMS
@@ -144,6 +147,8 @@ def manageIndividualList(request):
         context['listUsers'] = ViewLogic.getListUsers(context['listName'])
         context['listSize'] = len(context['listUsers'])
         return render(request, 'ManageIndividualList.html', context)
+    else:
+        return redirect('adminLogin.views.adminLogin')
 
 
 # Handles the deletion of lists, only accepts POST
