@@ -72,9 +72,9 @@
 				{% for list in mailingLists %}
 				<tr>
                     <form id="deleteSender" action="{% url 'app-admin-delete-list' %}" method="post"> {% csrf_token %}
-					    <td><p class="SmallPaddingForXSBTN"><u>{{list}}</u></p></td>
-					    <td><button type="submit" class="btn btn-danger btn-xs">Delete</button></td>
+					    <td><p class="SmallPaddingForXSBTN"><a href="{% url 'app-admin-individual-list' %}?q={{list}}"><u>{{list}}</u></a></p></td>
                         <input type="hidden" name="name" value="{{list}}">
+						<td><button type="submit" class="btn btn-danger btn-xs">Delete</button></td>
                     </form>
 				</tr>
 				{% empty %}

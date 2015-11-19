@@ -20,6 +20,11 @@ def getListNames():
     r = results.values_list('name', flat = True)
     return r
 
+def getListUsers(listName):
+    results = User.objects.filter(lists__name = listName).order_by("last_name")
+    r = results.values_list(flat = True)
+    return r
+
 def getSenderEmails():
     results = User.objects.filter(is_sender = True)
     r = results.values_list('email', flat = True)

@@ -1,0 +1,112 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'res/favicon.ico' %}">
+    <title>Evansville Day School Text Alerts</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/jumbotron-narrow.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'app-admin-login' %}">Evansville Day School Text Alerts</a>
+            </div>
+        </div>
+    </nav>
+
+    <img src="{% static 'res/logo.jpg' %}" alt="Evansville Day School" style="max-width: 100%;max-height: 100%;width: auto;height: auto; margin-top: 60px; margin-bottom: 6px">
+
+    <div class="container">
+        <div class="jumbotron">
+            <p align="center">
+                <b><u>Manage Lists</u></b>
+            </p>
+        </div>
+        <br><br>
+
+        <div class="form-group">
+            <div align="center">
+                <label for="lastname">{{listName}}:</label>
+                <input type="password" class="form-control" id="lastname">
+                <button type="button" class="btn btn-success">Update</button>
+            </div>
+        </div>
+        <div class="userDataFields">
+        <br>
+    </div>
+    <p>
+        <b>Total Subscribers: {{listSize}}</b>
+    </p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th><u>Last</u></th>
+                <th><u>First</u></th>
+                <th><u>Number</u></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+{% for user in listUsers %}
+            <tr>
+                <td>{{user.8}}</td>
+                <td>{{user.7}}</td>
+                <td>555-5555</td>
+                <td><button type="button" class="btn btn-danger btn-xs">Delete</button></td>
+            </tr>
+{% empty %}
+            <td>
+                <p class="SmallPaddingForXSBTN">
+                    <span class="glyphicon glyphicon-warning"></span>
+                    <u>The mailing list is empty...</u>
+                </p>
+            </td>
+{% endfor %}
+        </tbody>
+    </table>
+
+    <div class="form-group">
+        <div align="center">
+            <label for="lastname">Need to clear the entire list? Enter 987 in the box and hit Clear:</label>
+            <input type="password" class="form-control-CellPhoneEntrySmall" id="lastname">
+            <button type="button" class="btn btn-danger">Clear</button>
+            <br>
+            <div class="bs-callout bs-callout-danger" id="textWarning">
+                <h4><b><span class="glyphicon glyphicon-exclamation-sign"></span> Please note:</b></h4>
+                <p>When you delete a user, a confirmation text will <b>NOT</b> be sent.</p>
+                <p>If you want a confirmation text to be sent, check the box below.
+                    <i>This also applies to clearing the entire list, so proceed carefully.</i>
+                </p>
+                <br>
+                <div class="checkbox">
+                    <label><input type="checkbox" value=""><b><u>Send confirmation text</b></u></label>
+                </div>
+            </div>
+        </div>
+        <div align="center">
+            <a href="{% url 'app-admin-login' %}"><b><u>Return to Organization Management Menu</u></b></a>
+        </div>
+    </div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
+</body>
+</html>

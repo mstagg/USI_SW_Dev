@@ -3,6 +3,7 @@ from django.template.context_processors import csrf
 from models import User, List
 from forms import LoginForm, UploadLogo, ListForm, CreateNewSender, DeleteSender
 import ViewLogic
+from django.http import HttpResponse
 
 # Views
 
@@ -135,11 +136,22 @@ def manageLists(request):
         return redirect('adminLogin.views.adminLogin')
 
 
+def manageIndividualList(request):
+    context = {}
+    if 'admin' in request.session:
+        request.session.set_expiry(600)
+        context['listName'] = request.GET.get('q', '')
+        context['listUsers'] = ViewLogic.getListUsers(context['listName'])
+        context['listSize'] = len(context['listUsers'])
+        return render(request, 'ManageIndividualList.html', context)
+
+
 # Handles the deletion of lists, only accepts POST
 def deleteList(request):
     # If admin is logged in and request is POST...
     # Delete the list that shares a name with the name from the form
     if 'admin' in request.session and request.POST:
+        request.session.set_expiry(600)
         form = ListForm(request.POST)
         if form.is_valid():
             n = str(form.cleaned_data['name'])
@@ -199,6 +211,7 @@ def deleteSender(request):
     # If admin is logged in and request is POST...
     # Delete the User that shares the email with the email from the form
     if 'admin' in request.session and request.POST:
+        request.session.set_expiry(600)
         form = DeleteSender(request.POST)
         if form.is_valid():
             e = str(form.cleaned_data['email'])
