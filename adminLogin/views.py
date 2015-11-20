@@ -57,12 +57,8 @@ def adminLogin(request):
 
 # Handles logout procedures, only accepts POST
 def adminLogout(request):
-    if request.POST:
-        request.session.flush()
-        return redirect('adminLogin.views.adminLogin')
-    else:
-        request.session.flush()
-        return redirect('adminLogin.views.adminLogin')
+    request.session.flush()
+    return redirect('adminLogin.views.adminLogin')
 
 
 # TODO: ADD CODE TO HANDLE INVALID FORMS
@@ -222,6 +218,31 @@ def deleteSender(request):
             e = str(form.cleaned_data['email'])
             User.objects.filter(email = e).delete()
             return redirect('adminLogin.views.manageSenders')
+
+# TODO: IF FORM IS INVALID
+def manageSenderLists(request):
+    context = {}
+
+    if 'admin' in request.session:
+        request.session.set_expiry(600)
+        if request.POST:
+            form = ListForm(request.POST)
+            if form.is_valid():
+                context['senderEmail'] = request.GET.get('q', '')
+                l = ViewLogic.stringToList(form.cleaned_data['name'])
+                ViewLogic.addUserLists(context['senderEmail'], l)
+                context['mailingLists'] = ViewLogic.getUserListOwnership(context['senderEmail'])
+                context['success'] = True
+                return render(request, 'ManageSenderLists.html', context)
+                #return HttpResponse(str(ViewLogic.getUserListOwnership(context['senderEmail'])))
+                #ViewLogic.updateSenderLists(lists);
+                #return render(request, 'ManageSenderLists.html', context)
+            else:
+                pass
+        else:
+            context['senderEmail'] = request.GET.get('q', '')
+            context['mailingLists'] = ViewLogic.getUserListOwnership(context['senderEmail'])
+            return render(request, 'ManageSenderLists.html', context)
 
 
 #TODO: ADD FUNCTIONALITY

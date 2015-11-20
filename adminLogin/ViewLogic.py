@@ -20,10 +20,55 @@ def getListNames():
     r = results.values_list('name', flat = True)
     return r
 
+def getUserListNames(userEmail):
+    u = User.objects.filter(email = userEmail)[0]
+    ul = u.lists
+    userLists = ul.values_list('name', flat = True)
+    return userLists
+
+def getUserListOwnership(userEmail):
+    ownership = []
+    lists = getListNames()
+    userLists = getUserListNames(userEmail)
+    for i in range(len(lists)):
+        if lists[i] in userLists:
+            ownership.append(True)
+        else:
+            ownership.append(False)
+    final = []
+    for i in range(len(lists)):
+        final.append([lists[i], ownership[i]])
+    return final
+
+def removeUserFromList(userEmail, list):
+    l = List.objects.filter(name = list)
+    u = User.objects.filter(email = userEmail)[0]
+    if len(l) > 0:
+        u.lists.remove(l[0])
+
+def addUserToList(userEmail, list):
+    l = List.objects.filter(name = list)[0]
+    u = User.objects.filter(email = userEmail)[0]
+    u.lists.add(l)
+
+def addUserLists(email, lists):
+    for list in lists:
+        if list[1] == "0":
+            removeUserFromList(email, list[0])
+        else:
+            addUserToList(email, list[0])
+
 def getListUsers(listName):
     results = User.objects.filter(lists__name = listName).order_by("last_name")
     r = results.values_list(flat = True)
     return r
+
+def stringToList(str):
+    list = str.split(",")
+    for i in range(0, len(list)):
+        list[i] = list[i].split("|")
+    del list[-1]
+    return list
 
 def getSenderEmails():
     results = User.objects.filter(is_sender = True)

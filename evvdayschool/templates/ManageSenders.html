@@ -106,7 +106,7 @@
               <input type="hidden" name="email" value="{{email}}">
             </form>
             <td><p class="SmallPaddingForXSBTN"><u>{{email}}</u></p></td>
-            <td><button type="button" class="btn btn-warning btn-xs">Lists</button></td>
+            <td><a href="{% url 'app-admin-sender-lists' %}?q={{email}}"><button type="button" class="btn btn-warning btn-xs">Lists</button></a></td>
           </tr>
           {% empty %}
           <td>

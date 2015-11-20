@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'admin/lists/$', views.manageLists, name = "app-admin-lists"),
     url(r'admin/individualList/$', views.manageIndividualList, name = "app-admin-individual-list"),
     url(r'admin/senders/$', views.manageSenders, name = "app-admin-senders"),
+    url(r'admin/senderLists/$', views.manageSenderLists, name = "app-admin-sender-lists"),
     url(r'admin/logout/$', views.adminLogout, name = "app-admin-logout"),
     url(r'admin/deleteSender/$', views.deleteSender, name = "app-admin-delete-sender"),
     url(r'admin/deleteList/$', views.deleteList, name = "app-admin-delete-list"),
