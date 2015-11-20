@@ -3,7 +3,6 @@ from django.template.context_processors import csrf
 from models import User, List
 from forms import LoginForm, UploadLogo, ListForm, CreateNewSender, DeleteSender
 import ViewLogic
-from django.http import HttpResponse
 
 # Views
 
@@ -55,7 +54,7 @@ def adminLogin(request):
             return render(request, 'AdminSignInPage.html', context)
 
 
-# Handles logout procedures, only accepts POST
+# Handles logout procedures
 def adminLogout(request):
     request.session.flush()
     return redirect('adminLogin.views.adminLogin')
@@ -135,14 +134,21 @@ def manageLists(request):
         return redirect('adminLogin.views.adminLogin')
 
 
+# TODO: ALLOW USERS TO RENAME LIST
+# TODO: ALLOW USERS TO REMOVE RECIPIENTS AND CLEAR LIST
+# Allows user to remove recipients from lists
 def manageIndividualList(request):
     context = {}
+
+    # If admin is signed in...
+    # Show list of recipients for list
     if 'admin' in request.session:
         request.session.set_expiry(600)
         context['listName'] = request.GET.get('q', '')
         context['listUsers'] = ViewLogic.getListUsers(context['listName'])
         context['listSize'] = len(context['listUsers'])
         return render(request, 'ManageIndividualList.html', context)
+    # If admin login has expired, return to login page
     else:
         return redirect('adminLogin.views.adminLogin')
 
@@ -160,7 +166,7 @@ def deleteList(request):
             return redirect('adminLogin.views.manageLists')
 
 
-# TODO: PREVENT ADDING USERS WITH THE SAME EMAIL
+# TODO: PREVENT ADDING USERS WITH DUPLICATE EMAILS
 # Allows user to create, edit, and delete users with sender permissions
 def manageSenders(request):
     context = {}
@@ -219,14 +225,21 @@ def deleteSender(request):
             User.objects.filter(email = e).delete()
             return redirect('adminLogin.views.manageSenders')
 
+
 # TODO: IF FORM IS INVALID
+# Allows user to assign specific lists to senders
 def manageSenderLists(request):
     context = {}
 
+    # If admin is logged in...
     if 'admin' in request.session:
         request.session.set_expiry(600)
+        # If request is POST...
         if request.POST:
             form = ListForm(request.POST)
+            # If form has legitimate data...
+            # Update the lists that the sender is a part of and return the page
+            # with updated choices
             if form.is_valid():
                 context['senderEmail'] = request.GET.get('q', '')
                 l = ViewLogic.stringToList(form.cleaned_data['name'])
@@ -234,15 +247,21 @@ def manageSenderLists(request):
                 context['mailingLists'] = ViewLogic.getUserListOwnership(context['senderEmail'])
                 context['success'] = True
                 return render(request, 'ManageSenderLists.html', context)
-                #return HttpResponse(str(ViewLogic.getUserListOwnership(context['senderEmail'])))
-                #ViewLogic.updateSenderLists(lists);
-                #return render(request, 'ManageSenderLists.html', context)
+
+            # If form does not contain legitimate data...
             else:
                 pass
+
+        # If request is GET...
+        # Return page with checklists that the sender is assigned to
         else:
             context['senderEmail'] = request.GET.get('q', '')
             context['mailingLists'] = ViewLogic.getUserListOwnership(context['senderEmail'])
             return render(request, 'ManageSenderLists.html', context)
+
+    # If admin login has expired, return to login page
+    else:
+        return redirect('adminLogin.views.adminLogin')
 
 
 #TODO: ADD FUNCTIONALITY
