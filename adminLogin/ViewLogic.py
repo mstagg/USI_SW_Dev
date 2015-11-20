@@ -57,7 +57,7 @@ def getUserListOwnership(userEmail):
 def removeUserFromList(userEmail, list):
     l = List.objects.filter(name = list)[0]
     u = User.objects.filter(email = userEmail)[0]
-    u.lists.remove(l[0])
+    u.lists.remove(l)
 
 
 # Takes a user's email and adds that user to a given list
