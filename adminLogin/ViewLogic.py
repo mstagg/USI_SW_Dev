@@ -128,9 +128,13 @@ def generateUserName(first, last):
 # Returns true if operation was successful
 def replaceLogo(f):
     try:
-        with open('evvdayschool/static/res/logo.jpg', 'wb+') as destination:
-            for chunk in f.chunks():
-                destination.write(chunk)
-        return True
+        fType = f.name.split(".")[1]
+        if(fType == 'jpg'):
+            with open('evvdayschool/static/res/logo.jpg', 'wb+') as destination:
+                for chunk in f.chunks():
+                    destination.write(chunk)
+            return True
+        else:
+            return False
     except:
         return False

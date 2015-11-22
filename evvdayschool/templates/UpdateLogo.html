@@ -54,7 +54,12 @@
 	</div>
 
 	<div class="container">
-		<br><br>
+		<div class="alert alert-info" align = "center" role="alert">
+			<span class="glyphicon glyphicon-refresh"></span>    If your logo has not changed after a successful upload, <strong>refresh your browser!</strong>.
+		</div>
+	</div>
+
+	<div class="container">
 		<div align="center">
 			<form action="{% url 'app-admin-logo' %}" method="post" enctype="multipart/form-data"> {% csrf_token %}
 				<input class="file" type="file" id="file" name="file" accept=".jpg">
@@ -63,10 +68,17 @@
 	</div>
 	<br>
 	
-	{% if success %}
+	{% if success == True %}
 	<div class="container">
 		<div class="alert alert-success" align = "center" role="alert">
-			<span class="glyphicon glyphicon-success"></span><strong>Success:</strong> Your new logo was successfully uploaded!
+			<span class="glyphicon glyphicon-ok"></span>    <strong>Success:</strong> Your new logo was successfully uploaded!
+		</div>
+	</div>
+	<br>
+	{% elif success == False %}
+	<div class="container">
+		<div class="alert alert-danger" align = "center" role="alert">
+			<span class="glyphicon glyphicon-remove"></span>    <strong>Failure:</strong> Your new logo could not be uploaded.
 		</div>
 	</div>
 	<br>
