@@ -264,6 +264,11 @@ def manageSenderLists(request):
         return redirect('adminLogin.views.adminLogin')
 
 
+def orgSecurityCode(request):
+    context = {}
+    return render(request, 'OrganizationSecurityCode.html', context)
+
+
 #TODO: ADD FUNCTIONALITY
 def accountInfo(request):
     context = {}

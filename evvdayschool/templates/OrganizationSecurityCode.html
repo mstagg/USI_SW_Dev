@@ -1,0 +1,108 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
+    <title>Evansville Day School Text Alerts</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/jumbotron-narrow.css' %}" rel="stylesheet">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{% url 'app-admin-login' %}">Evansville Day School Text Alerts</a>
+        </div>
+          <div class="navbar-right" vertical-align="bottom">
+        <p class="navbar-btn">
+          <form id="logoutForm" action="{% url 'app-admin-logout' %}" method="get">
+              <button type="button" class="btn btn-danger" onclick="btn_LogoutPressed()">Logout</button>
+          </form>
+        </p>
+      </div>
+      </div>
+    </nav>
+  
+   <img src="{% static 'res/logo.jpg' %}" alt="Evansville Day School" style="max-width: 100%;max-height: 100%;width: auto;height: auto; margin-top: 60px; margin-bottom: 6px">
+
+  
+    <div class="container">
+      
+	  <div class="jumbotron">
+        
+       <div class="allignTextOverride">
+	   <h2>Organization Security Code</h2>
+	   </div>
+      </div>
+	  
+	  <br>
+	  
+	  <p align="center">
+	   <b><u>SMS Text Alert Lists</u></b>
+	   </p>
+	  
+	  <div style="margin-left: 28%; text-align: left">
+	  
+		<div class="radio">
+			<label><input type="radio" name="optradio"><b>Active</b> (Organization Security Code <u>Required</u> to Sign Up for Alerts)</label>
+		</div>
+		<div class="radio">
+			<label><input type="radio" name="optradio"><b>Inactive</b> (Organization Security Code <u>Not Required</u> to Sign Up for Alerts)</label>
+		</div>
+		<br>
+	 </div>
+	 
+	 <div align="center">
+	  <div class="form-group">
+		<label for="firstname">Organization Security Code:</label>
+		<input type="password" class="form-control-CellPhoneEntrySmall" id="firstname">
+		</div>
+	  </div>
+	  
+	  <div class="bs-callout bs-callout-warning" id="textWarning">
+    <h4><b><span class="glyphicon glyphicon-exclamation-sign"></span> Please note:</b></h4>
+    <p>The Organization Security Code must use <b>letters and numbers only.</b> 
+	Spaces, punctuation, and special characters are not allowed. It can be from 2 to 8 characters long.</p>
+	<p>Changes are effective immediately.</p>
+    </div>
+	  
+	 
+	 <br>
+	 
+     </div>
+	 
+	 </div class="userDataFields">
+	 
+	 <div class="ButtonListing">
+	 <div align="center">
+	 <button type="button" class="btn btn-success">Save Changes</button>
+     <button type="button" class="btn btn-warning">Cancel</button>
+	 </div>
+	 </div>
+<br>
+        <div align="center">
+        <a href="{% url 'app-admin-login' %}"><b><u>Return to Organization Management Menu</u></b></a>
+    </div>
+
+      </div>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  </body>
+</html>
