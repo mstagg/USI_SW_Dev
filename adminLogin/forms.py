@@ -19,6 +19,9 @@ class UploadLogo(forms.Form):
 class ListForm(forms.Form):
     name = forms.CharField(max_length = 50)
 
+class TestForm(forms.Form):
+    active = forms.CharField(max_length = 50)
+    code = forms.CharField(max_length = 50)
 
 # Used to transport all relevant to create a new User
 class CreateNewSender(forms.Form):

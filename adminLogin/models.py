@@ -20,12 +20,8 @@ class User(models.Model):
     last_name = models.CharField(max_length = 50)
     lists = models.ManyToManyField(List)
 
-
-# TODO: REWORK, RENAME TRANSACTION?
-# Records transactions and tracks current token amount
-class TokenHistory(models.Model):
-    prev_amount = models.IntegerField()
-    new_amount = models.IntegerField()
-    change_amount = models.IntegerField()
-    change_datetime = models.DateTimeField()
-    current_amount = models.IntegerField()
+class AccountStatus(models.Model):
+    security_code = models.CharField(max_length = 8)
+    active_code = models.BooleanField(default = True)
+    token_amount = models.IntegerField()
+    change_date = models.DateTimeField()

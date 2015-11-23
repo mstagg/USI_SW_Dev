@@ -1,4 +1,5 @@
-from models import User, List
+import datetime
+from models import User, List, AccountStatus
 
 # Auxiliary functions
 
@@ -121,6 +122,52 @@ def generateUserName(first, last):
         else:
             flag = False
     return usr
+
+
+def isFirstEntry():
+    results = AccountStatus.objects.all()
+    if(len(results) > 0):
+        return False
+    else:
+        return True
+
+
+def lastTokenAmount():
+    try:
+        results = AccountStatus.objects.filter().order_by('-change_date')[0]
+        return results.token_amount
+    except:
+        return 0
+
+def getActiveStatus():
+    try:
+        results = AccountStatus.objects.filter().order_by('-change_date')[0]
+        return results.active_code
+    except:
+        return True
+
+def getCode():
+    try:
+        results = AccountStatus.objects.filter().order_by('-change_date')[0]
+        return results.security_code
+    except:
+        return "None"
+
+# TODO: Validate code data
+# TODO: Display current security code
+def updateSeurityCode(checkboxValue, code):
+    c = code
+    if checkboxValue == 'active':
+        a = True
+    elif checkboxValue == 'inactive':
+        a = False
+    if isFirstEntry():
+        tk = 0
+    else:
+        tk = lastTokenAmount()
+    tm = datetime.datetime.now()
+    new = AccountStatus(security_code = c, active_code = a, token_amount = tk, change_date = tm)
+    new.save()
 
 
 # TODO: return false if file type is not an image

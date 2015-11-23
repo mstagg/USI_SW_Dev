@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
 from models import User, List
-from forms import LoginForm, UploadLogo, ListForm, CreateNewSender, DeleteSender
+from forms import LoginForm, UploadLogo, ListForm, CreateNewSender, DeleteSender, TestForm
 import ViewLogic
+from django.http import HttpResponse
 
 # Views
 
@@ -230,6 +231,7 @@ def deleteSender(request):
 # Allows user to assign specific lists to senders
 def manageSenderLists(request):
     context = {}
+    context.update(csrf(request))
 
     # If admin is logged in...
     if 'admin' in request.session:
@@ -264,9 +266,40 @@ def manageSenderLists(request):
         return redirect('adminLogin.views.adminLogin')
 
 
+# TODO: ADD ERROR HANDLING, ALL FIELDS MUST BE FULL
+# TODO: ADD CODE TO HANDLE INVALID FORMS
+# Allows user to configure the organization security code
 def orgSecurityCode(request):
     context = {}
-    return render(request, 'OrganizationSecurityCode.html', context)
+    context.update(csrf(request))
+    context['active'] = ViewLogic.getActiveStatus()
+    context['code'] = ViewLogic.getCode()
+
+    # If admin is logged in...
+    if 'admin' in request.session:
+        request.session.set_expiry(600)
+        # If request is POST...
+        if request.POST:
+            form = TestForm(request.POST)
+            # If form has legitimate data...
+            # Create a new account status record with the new information
+            if form.is_valid():
+                ViewLogic.updateSeurityCode(form.cleaned_data['active'], form.cleaned_data['code'])
+                context['active'] = ViewLogic.getActiveStatus()
+                context['code'] = ViewLogic.getCode()
+                return render(request, 'OrganizationSecurityCode.html', context)
+
+            # If form has illegitimate data...
+            else:
+                pass
+
+        # If request is GET, return page...
+        else:
+            return render(request, 'OrganizationSecurityCode.html', context)
+
+    # If admin login has expired, return to login page
+    else:
+        return redirect('adminLogin.views.adminLogin')
 
 
 #TODO: ADD FUNCTIONALITY
