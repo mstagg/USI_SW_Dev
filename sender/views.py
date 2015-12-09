@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
 import ViewLogic
-from forms import LoginForm
+from forms import LoginForm, MessageForm
 
 # Create your views here.
 # Allows user to log in to the admin management site
@@ -57,3 +57,24 @@ def senderLogin(request):
 def senderLogout(request):
     request.session.flush()
     return redirect('sender.views.senderLogin')
+
+def sendMsg(request):
+    context = {}
+    if request.POST:
+        form = MessageForm(request.POST)
+        context['amt'] = ViewLogic.numTokens()
+        if form.is_valid():
+            m = str(form.cleaned_data['msg'])
+            l = str(form.cleaned_data['list'])
+            if(ViewLogic.enoughTokens(len(ViewLogic.getListUsers(l)))):
+                ViewLogic.send(m, l)
+                context['email'] = request.session['email']
+                context['lists'] = ViewLogic.getSenderLists(context['email'])
+                ViewLogic.removeTokens(len(ViewLogic.getListUsers(l)))
+                context['success'] = True
+                return render(request, 'SendMessagePage.html', context)
+            else:
+                context['email'] = request.session['email']
+                context['lists'] = ViewLogic.getSenderLists(context['email'])
+                context['success'] = False
+                return render(request, 'SendMessagePage.html', context)

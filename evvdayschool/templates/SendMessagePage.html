@@ -54,7 +54,7 @@
 	   </p>
 	   
 	   <p align="right">
-	   Tokens Remaining: <b><u>305</u></b>
+	   Tokens Remaining: <b><u>{{amt}}</u></b>
 	   </p>
 	  
 	  <div class="centered">
@@ -63,7 +63,7 @@
 	   </p>
           {% for list in lists %}
 		<div class="radio">
-			<label><input type="radio" name="optradio"><b>{{list}}</b> (16 recipients)</label>
+			<label><input type="radio" name="optradio" value="{{list.0}}"><b>{{list.0}}</b> ({{list.1}} recipients)</label>
 		</div>
           {% empty %}
           <p class="SmallPaddingForXSBTN">
@@ -84,14 +84,29 @@
 	</div>
 	 
 	 <br>
-	 
+
+  	{% if success %}
+	<div class="container">
+		<div class="alert success" align = "center" role="alert">
+			<span class="glyphicon success"></span><strong>Success:</strong> Your message was sent!
+		</div>
+	</div>
+	<br>
+  {% else %}
+  	<div class="container">
+		<div class="alert alert-danger" align = "center" role="alert">
+			<span class="glyphicon danger"></span><strong>Failure:</strong> Your message could not be sent. Maybe you are out of tokens?
+		</div>
+	</div>
+	<br>
+	{% endif %}
      </div>
 	 
 	 </div class="userDataFields">
 	 
 	 <div class="ButtonListing">
 	 <div align="center">
-	 <button type="button" class="btn btn-success">Submit</button>
+	 <button type="button" class="btn btn-success" onclick="send()">Submit</button>
      <button type="button" class="btn btn-warning">Cancel</button>
 	 </div>
 	 </div>
@@ -104,11 +119,47 @@
 		document.getElementById("logoutForm").submit();
 	}
 </script>
+<script>
+	function post(path) {
+		method = "post";
 
+		var form = document.createElement("form");
+		form.setAttribute("method", method);
+		form.setAttribute("action", path);
+
+		var msg = document.createElement("input");
+		var list = document.createElement("input");
+		var csrf = document.createElement("input");
+
+		msg.setAttribute("type", "hidden");
+		msg.setAttribute("name", "msg");
+		msg.setAttribute("value", document.getElementById("comment").value);
+
+		list.setAttribute("type", "hidden");
+		list.setAttribute("name", "list");
+		list.setAttribute("value", $('input[name="optradio"]:checked').val());
+
+		csrf.setAttribute("type", "hidden");
+		csrf.setAttribute("name", "csrfmiddlewaretoken");
+		csrf.setAttribute("value", Cookies.get('csrftoken'));
+
+		form.appendChild(csrf);
+		form.appendChild(msg);
+		form.appendChild(list);
+
+		document.body.appendChild(form);
+		form.submit();
+	}
+
+	function send(){
+		post("{% url 'app-sender-msg' %}");
+	}
+</script>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/cookie.js' %}"></script>
   </body>
 </html>

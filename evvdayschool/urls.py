@@ -36,6 +36,8 @@ urlpatterns = [
     # SENDER SITE
     url(r'sender/$', sView.senderLogin, name = "app-sender-login"),
     url(r'sender/logout/$', sView.senderLogout, name = "app-sender-logout"),
+    url(r'sender/msg/$', sView.sendMsg, name = "app-sender-msg"),
+
     # USER SITE
     url(r'^$', rView.register, name = "app-registration-register"),
     url(r'confirm/$', rView.confirm, name = "app-registration-confirm"),

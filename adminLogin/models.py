@@ -27,3 +27,8 @@ class AccountStatus(models.Model):
     active_code = models.BooleanField(default = True)
     token_amount = models.IntegerField()
     change_date = models.DateTimeField()
+
+class Message(models.Model):
+    msg = models.CharField(max_length = 160)
+    list = models.CharField(max_length = 50)
+    size = models.IntegerField()
