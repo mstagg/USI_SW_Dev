@@ -46,45 +46,31 @@
 	<div class="container">
 		<div class="jumbotron">
 			<div class="allignTextOverride">
-				<b>Custom URL: <u>http://SMSManageIt.com/dayschool</u></b>
+				<b>Custom URL: <u>http://50.4.179.220/</u></b>
 			</div>
 		</div>
 		<br>
-		<p>Tokens:&nbsp;450&nbsp;<a href="{% url 'app-admin-tokens' %}"><b><u>Buy More</u></b></p></a>
+		<p>Tokens:&nbsp;{{amt}}&nbsp;<a href="{% url 'app-admin-tokens' %}"><b><u>Buy More</u></b></p></a>
 		<br>
 		<h3>Recent Messages:</h3>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
 					<th>Date</th>
-					<th>Time</th>
 					<th>List</th>
 					<th>Senders</th>
 					<th>Recipients</th>
 				</tr>
 			</thead>
 			<tbody>
+			{% for m in messages %}
 				<tr>
-					<td>8/10/11</td>
-					<td>4:55pm</td>
-					<td>Upper School Sports</td>
-					<td>coach@dayschool.org</td>
-					<td>42</td>
+					<td>{{m.0}}</td>
+					<td>{{m.1}}</td>
+					<td>{{m.2}}</td>
+					<td>{{m.3}}</td>
 				</tr>
-				<tr>
-					<td>8/11/11</td>
-					<td>7:00am</td>
-					<td>Lower School Announcements</td>
-					<td>lsadmin@dayschool.org</td>
-					<td>250</td>
-				</tr>
-				<tr>
-					<td>8/25/11</td>
-					<td>2:40pm</td>
-					<td>Upper School Announcements</td>
-					<td>usadmin@dayschool.org</td>
-					<td>96</td>
-				</tr>
+			{% endfor %}
 			</tbody>
 		</table>
 		<br>

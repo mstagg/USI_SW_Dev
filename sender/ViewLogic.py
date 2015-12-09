@@ -31,7 +31,7 @@ def getSenderLists(userEmail):
     return rtn
 
 def send(msg, list):
-    m = Message(msg = msg, list = list)
+    m = Message(msg = msg, list = list, change_date = datetime.datetime.now())
     m.size = len(getListUsers(list))
     m.save()
 

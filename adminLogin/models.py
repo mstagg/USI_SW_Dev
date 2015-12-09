@@ -32,3 +32,4 @@ class Message(models.Model):
     msg = models.CharField(max_length = 160)
     list = models.CharField(max_length = 50)
     size = models.IntegerField()
+    change_date = models.DateTimeField()

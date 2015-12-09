@@ -307,6 +307,8 @@ def orgSecurityCode(request):
 def accountInfo(request):
     context = {}
     if 'admin' in request.session:
+        context['amt'] = ViewLogic.lastTokenAmount()
+        context['messages'] = ViewLogic.getRecentMessages()
         request.session.set_expiry(600)
         return render(request, 'AccountInformation.html', context)
     else:
@@ -317,6 +319,16 @@ def addTokens(request):
     context = {}
     if 'admin' in request.session:
         request.session.set_expiry(600)
-        return render(request, 'AddTokens.html', context)
+        context['amt'] = ViewLogic.lastTokenAmount()
+        if request.POST:
+            form = ListForm(request.POST)
+            if form.is_valid():
+                add = form.cleaned_data['name']
+                ViewLogic.addTokens(int(add))
+                context['amt'] = ViewLogic.lastTokenAmount()
+                context['success'] = True
+                return render(request, 'AddTokens.html', context)
+        else:
+            return render(request, 'AddTokens.html', context)
     else:
        return redirect('adminLogin.views.adminLogin')

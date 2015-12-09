@@ -1,6 +1,6 @@
 import datetime
 
-from models import User, List, AccountStatus
+from models import User, List, AccountStatus, Message
 
 
 # Auxiliary functions
@@ -187,3 +187,28 @@ def replaceLogo(f):
             return False
     except:
         return False
+
+def getSendersFromList(list):
+    results = User.objects.filter(is_sender = True, lists__name = list)
+    str = ""
+    for r in results:
+        str += (r.email + ", ")
+    return str
+
+def addTokens(add):
+    old = AccountStatus.objects.filter().order_by('-change_date')[0]
+    amt = old.token_amount + add
+    new = AccountStatus(security_code = old.security_code, active_code = old.active_code, token_amount = amt, change_date = datetime.datetime.now())
+    new.save()
+
+def getRecentMessages():
+    rtn = []
+    results = Message.objects.filter().order_by('-change_date')[:20]
+    for r in results:
+        n = []
+        n.append(r.change_date)
+        n.append(r.list)
+        n.append(getSendersFromList(r.list))
+        n.append(r.size)
+        rtn.append(n)
+    return rtn
