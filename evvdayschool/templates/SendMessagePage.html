@@ -87,12 +87,13 @@
 
   	{% if success %}
 	<div class="container">
-		<div class="alert success" align = "center" role="alert">
+		<div class="alert alert-success" align = "center" role="alert">
 			<span class="glyphicon success"></span><strong>Success:</strong> Your message was sent!
 		</div>
 	</div>
 	<br>
-  {% else %}
+  {% endif %}
+  {% if failed %}
   	<div class="container">
 		<div class="alert alert-danger" align = "center" role="alert">
 			<span class="glyphicon danger"></span><strong>Failure:</strong> Your message could not be sent. Maybe you are out of tokens?

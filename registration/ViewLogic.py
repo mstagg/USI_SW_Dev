@@ -116,3 +116,7 @@ def activateUser(first, last, phone):
     u.active = True
     u.save()
 
+def removeUser(ph):
+    u = User.objects.filter(phone = ph)
+    if len(u) > 0:
+        u[0].delete()

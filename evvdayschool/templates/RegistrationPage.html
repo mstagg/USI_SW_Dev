@@ -24,7 +24,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Evansville Day School Text Alerts</a>
+          <a class="navbar-brand">Evansville Day School Text Alerts</a>
         </div>
       </div>
     </nav>
@@ -107,10 +107,28 @@
 	 <div class="ButtonListing">
 	 <div align="center">
 	 <button type="button" class="btn btn-success" onclick="btn_LogInPressed()">Submit</button>
-	 <button type="button" class="btn btn-danger">Remove All</button>
-     <button type="button" class="btn btn-warning">Cancel</button>
+	 <button type="button" class="btn btn-danger" onclick="send()">Remove All</button>
+     <a href="{% url 'app-registration-register' %}"><button type="button" class="btn btn-warning">Cancel</button></a>
 	 </div>
 	 </div>
+	  {% if remove %}
+	<br>
+  	<div class="container">
+		<div class="alert alert-success" align = "center" role="alert">
+			<span class="glyphicon danger"></span><strong>Success:</strong> Your number was removed from the mailing list!
+		</div>
+	</div>
+	<br>
+	{% endif %}
+		  {% if failed %}
+	<br>
+  	<div class="container">
+		<div class="alert alert-danger" align = "center" role="alert">
+			<span class="glyphicon danger"></span><strong>Failure:</strong> Your registration could not be completed. Please try again...
+		</div>
+	</div>
+	<br>
+	{% endif %}
 	 
       </div>
 
@@ -119,6 +137,10 @@
     	function btn_LogInPressed(){
     	   	createList();
     		document.getElementById("register").submit();
+    	}
+
+    	function btn_remove(){
+
     	}
     </script>
 <script>
@@ -138,10 +160,41 @@
 		document.getElementById("lists").value = lists;
 	}
 </script>
+	<script>
+	function post(path) {
+		method = "post";
+
+		var form = document.createElement("form");
+		form.setAttribute("method", method);
+		form.setAttribute("action", path);
+
+		var phone = document.createElement("input");
+		var csrf = document.createElement("input");
+
+		phone.setAttribute("type", "hidden");
+		phone.setAttribute("name", "phone");
+		phone.setAttribute("value", document.getElementById("cellphn").value);
+
+		csrf.setAttribute("type", "hidden");
+		csrf.setAttribute("name", "csrfmiddlewaretoken");
+		csrf.setAttribute("value", Cookies.get('csrftoken'));
+
+		form.appendChild(csrf);
+		form.appendChild(phone);
+
+		document.body.appendChild(form);
+		form.submit();
+	}
+
+	function send(){
+		post("{% url 'app-registration-remove' %}");
+	}
+	</script>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+      <script src="{% static 'js/cookie.js' %}"></script>
   </body>
 </html>

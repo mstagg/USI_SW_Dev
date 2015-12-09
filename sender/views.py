@@ -7,6 +7,7 @@ from forms import LoginForm, MessageForm
 # Allows user to log in to the admin management site
 def senderLogin(request):
     context = {}
+    context['amt'] = ViewLogic.numTokens()
     context.update(csrf(request))
 
     # If received a POST request...
@@ -60,9 +61,9 @@ def senderLogout(request):
 
 def sendMsg(request):
     context = {}
+    context['amt'] = ViewLogic.numTokens()
     if request.POST:
         form = MessageForm(request.POST)
-        context['amt'] = ViewLogic.numTokens()
         if form.is_valid():
             m = str(form.cleaned_data['msg'])
             l = str(form.cleaned_data['list'])

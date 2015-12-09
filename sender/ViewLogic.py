@@ -50,6 +50,9 @@ def removeTokens(size):
     a = AccountStatus(token_amount = s)
     a.security_code = acc.security_code
     a.active_code = acc.active_code
+    a.token_amount = s
+    a.change_date = datetime.datetime.now()
+    a.save()
 
 def numTokens():
     acc = AccountStatus.objects.all().order_by('-change_date')[0]

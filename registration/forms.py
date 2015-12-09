@@ -14,3 +14,6 @@ class ConfirmationForm(forms.Form):
     phone = forms.IntegerField()
     first = forms.CharField(max_length=50)
     last = forms.CharField(max_length=50)
+
+class RemovalForm(forms.Form):
+    phone = forms.IntegerField()

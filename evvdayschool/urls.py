@@ -41,5 +41,6 @@ urlpatterns = [
     # USER SITE
     url(r'^$', rView.register, name = "app-registration-register"),
     url(r'confirm/$', rView.confirm, name = "app-registration-confirm"),
+    url(r'remove/$', rView.remove, name = "app-registration-remove"),
 
 ]
