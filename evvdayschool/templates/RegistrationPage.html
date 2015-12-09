@@ -1,0 +1,147 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
+
+    <title>Evansville Day School Text Alerts</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/jumbotron-narrow.css' %}" rel="stylesheet">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Evansville Day School Text Alerts</a>
+        </div>
+      </div>
+    </nav>
+  
+   <img src="{% static 'res/logo.jpg' %}" alt="Evansville Day School" style="max-width: 100%;max-height: 100%;width: auto;height: auto; margin-top: 60px; margin-bottom: 6px">
+
+  
+    <div class="container">
+      
+	  <div class="jumbotron">
+        
+       <p>
+	   Select each list for which you wish to receive alerts. You may select more than one list.
+	   </p>
+	   
+	   <p>
+	   To update your lists, just come back to this page and reregister. Your new selections will replace your old selections.
+	   </p>
+	   
+	   <p>
+	   To remove yourself from these lists, just come back to this page and enter your cell phone number and click "Remove All". This will remove you from all lists.
+	   
+      </div>
+	  
+	  <br>
+	  
+	  <p align="center">
+	   <b><u>SMS Text Alert Lists</u></b>
+	   </p>
+	  
+	  <div class="centered">
+	  {% for list in lists %}
+		<div class="checkbox">
+			<label><input type="checkbox" value="" id="{{list}}">{{list}}</label>
+		</div>
+	  {% empty %}
+		          <p class="SmallPaddingForXSBTN">
+              <span class="glyphicon glyphicon-warning"></span>
+              <u>There are no mailing lists. Please contact an administrator.</u>
+            </p>
+	  <br>
+		{% endfor %}
+		  	  </div>
+	  
+	  <form id="register" action="{% url 'app-registration-register' %}" method="post">
+{% csrf_token %}
+     <div class="userDataFields">
+	 <div class="form-group">
+		<label for="cellphn">Cell Phone Number:</label>
+		<input type="text" class="form-control-CellPhoneEntryLarge" id="cellphn" name="phone">
+	 </div>
+	 
+	 <div class="form-group">
+		<label for="firstname">First Name:</label>
+		<input type="username" class="form-control" id="firstname" name="first">
+	 </div>
+	 <div class="form-group">
+		<label for="lastname">Last Name:</label>
+		<input type="username" class="form-control" id="lastname" name="last">
+	 </div>
+		 {% if active %}
+	 <div class="form-group">
+		<label for="securitycode">Organization Security Code:</label>
+		<input type="password" class="form-control" id="securitycode" name="code">
+	 </div>
+		 {% else %}
+		 	 <div class="form-group">
+		<input type="hidden" class="form-control" id="securitycode" name="code" value="MEESEEKS">
+	 </div>
+{% endif %}
+		 <div class="form-group">
+		<input type="hidden" class="form-control" id="lists" name="lists">
+	 </div>
+	 <br>
+	 
+     </div>
+	 </form>
+	 </div class="userDataFields">
+	 
+	 <div class="ButtonListing">
+	 <div align="center">
+	 <button type="button" class="btn btn-success" onclick="btn_LogInPressed()">Submit</button>
+	 <button type="button" class="btn btn-danger">Remove All</button>
+     <button type="button" class="btn btn-warning">Cancel</button>
+	 </div>
+	 </div>
+	 
+      </div>
+
+    </div> <!-- /container -->
+    <script>
+    	function btn_LogInPressed(){
+    	   	createList();
+    		document.getElementById("register").submit();
+    	}
+    </script>
+<script>
+	function createList(){
+		var lists = ""
+		// Construct list of checkboxes and their values
+		// Format: "LISTNAME|VALUE,LISTNAME|VALUE,LISTNAME|VALUE,"
+		{% for list in lists %}
+		lists += "{{list}}|"
+		l = document.getElementById("{{list}}")
+		if(l.checked){
+		lists += "1,"
+		} else{
+		lists += "0,"
+		}
+		{% endfor %}
+		document.getElementById("lists").value = lists;
+	}
+</script>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

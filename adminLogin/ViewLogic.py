@@ -1,5 +1,7 @@
 import datetime
+
 from models import User, List, AccountStatus
+
 
 # Auxiliary functions
 
@@ -81,7 +83,7 @@ def addUserLists(email, lists):
 # Takes a list name and searches the database for all users in the list
 # Returns list of strings
 def getListUsers(listName):
-    results = User.objects.filter(lists__name = listName).order_by("last_name")
+    results = User.objects.filter(active = True,lists__name = listName).order_by("last_name")
     r = results.values_list(flat = True)
     return r
 

@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
-from models import User, List
-from forms import LoginForm, UploadLogo, ListForm, CreateNewSender, DeleteSender, TestForm
+
 import ViewLogic
-from django.http import HttpResponse
+from forms import LoginForm, UploadLogo, ListForm, CreateNewSender, DeleteSender, TestForm
+from models import User, List
+
 
 # Views
 

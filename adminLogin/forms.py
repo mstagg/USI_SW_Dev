@@ -17,7 +17,7 @@ class UploadLogo(forms.Form):
 # TODO: CHANGE NAME TO REFLECT GENERIC CHARFIELD UPLOAD
 # Used to transport a string from a client to the view via a form
 class ListForm(forms.Form):
-    name = forms.CharField(max_length = 50)
+    name = forms.CharField(max_length = 250)
 
 class TestForm(forms.Form):
     active = forms.CharField(max_length = 50)
