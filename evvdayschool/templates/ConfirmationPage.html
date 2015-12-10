@@ -49,20 +49,12 @@
         {% for l in lists %}
 	   <p class="tab"> <span class="glyphicon glyphicon-ok"></span> {{l}}</p>
         {% endfor %}
-        {% else %}
-        <br>
-        	<div class="container">
-		<div class="alert alert-success" align = "center" role="alert">
-			<span class="glyphicon glyphicon-warning"></span><strong>CONGRATULATIONS:</strong> Registration was successful!
-		</div>
-	</div>
-        {% endif %}
-	   
-	   <br> 
+
+	   <br>
      </div>
-	 
-	 
-	
+
+
+
 	<div class="col-md-5">
 	<div class="bs-callout bs-callout-danger" id="textWarning">
     <h4><b><span class="glyphicon glyphicon-exclamation-sign"></span> Please note:</b></h4>
@@ -70,12 +62,12 @@
     </div>
 	</div>
       </div>
-	  
+
 	  <br>
-	  
+
 	  <div class="container">
 	  <h3>Everything looking good? If so...</h3>
-	  <p>We've just sent a confirmation code to your cellphone. To complete your registration, enter this code and click Submit. <i><b>You must complete this step to be registered.</i></b></p> 
+	  <p>We've just sent a confirmation code to your cellphone. To complete your registration, enter this code and click Submit. <i><b>You must complete this step to be registered.</i></b></p>
 	  <div class="form-group">
 		<label for="confirmationCode">Confirmation Code:</label>
 		<input type="confirmationCode" class="form-control" id="confirmationCode" value="1234" readonly>
@@ -84,6 +76,15 @@
 	 <br>
      <h4>I changed my mind! <a href="{% url 'app-registration-register' %}"><button type="button" class="btn btn-warning">Cancel</button></a></h4>
 	  </div>
+        {% else %}
+        <br>
+        	<div class="container">
+		<div class="alert alert-success" align = "center" role="alert">
+			<span class="glyphicon glyphicon-warning"></span><strong>CONGRATULATIONS:</strong> Registration was successful!
+		</div>
+	</div>
+        {% endif %}
+
 	  
 	  </div>
 
